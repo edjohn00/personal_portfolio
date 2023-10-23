@@ -1,0 +1,84 @@
+{% extends "base.html" %} 
+
+{% block page_content %}
+<h1>Projects</h1>
+<div class="row">
+    <div class="card card-body">
+        <form method="get">
+            <div class="form-row align-items-center">
+                <div class="col-md-4 mb-3">
+                    {{ project_filter.form.title.label_tag }}
+                    {{ project_filter.form.title }}
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% for project in projects %}
+    <div class="col-md-4">
+        <br>
+        <div class="card md-2">
+            {% if project.image %}
+                <img class="card-img-top" src="{{ project.image.url }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ project.title }}</h5>
+                <p class="card-text">{{ project.description }}</p>
+                <a href="{% url 'project_detail' project.pk %}" class="btn btn-primary">Read More</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="row m-5">
+        <div class="col-md-12 m-3">
+            {% if projects.has_other_pages %}
+
+                <ul class="pagination">
+                    {% if projects.has_previous %}
+                    <li class="page-item">
+                        <a href="?page={{ projects.previous_page_number }}" class="page-link">&laquo;</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a href="?page=1" class="page-link">&laquo;</a>
+                    </li>
+                    {% endif %}
+
+                    <!-- for the next page of pagination -->
+
+                    {% for i in projects.paginator.page_range %}
+
+                        {% if projects.number == i %}
+
+                        <li class ="page-item active">
+                            <a href="?page={{ i }}" class="page-link">{{ i }}</a>
+                        </li>
+
+                        {% else %}
+
+                        <li class ="page-item">
+                            <a href="?page={{ i }}" class="page-link">{{ i }}</a>
+                        </li>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {% if projects.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ projects.next_page_number }}" class="page-link">&raquo;</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a href="?page={{ projects.paginator.number_pages }}" class="page-link">&raquo;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
